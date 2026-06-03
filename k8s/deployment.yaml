@@ -15,6 +15,7 @@ spec:
       containers:
       - name: healthcare-agent-api
         image: appars/healthcare-agent-api:v1
+	imagePullPolicy: Always
         ports:
         - containerPort: 8000
 ---

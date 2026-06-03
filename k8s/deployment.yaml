@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthcare-agent-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: healthcare-agent-api
+  template:
+    metadata:
+      labels:
+        app: healthcare-agent-api
+    spec:
+      containers:
+      - name: healthcare-agent-api
+        image: appars/healthcare-agent-api:v1
+        ports:
+        - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: healthcare-agent-api-service
+spec:
+  selector:
+    app: healthcare-agent-api
+  ports:
+  - port: 80
+    targetPort: 8000
+  type: NodePort

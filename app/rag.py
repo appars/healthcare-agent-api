@@ -1,19 +1,25 @@
-# Extremely simple RAG implementation.
-# Reads local guidelines and returns matching rules.
+"""
+rag.py
+
+Simple RAG implementation.
+
+Version 2:
+Read guidelines from a knowledge file.
+
+Future:
+Replace with FAISS + Embeddings.
+"""
 
 from pathlib import Path
 
-GUIDE_FILE = Path("knowledge/clinical_guidelines.md")
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-def retrieve_guidelines(vitals):
-    text = GUIDE_FILE.read_text()
-    matches = []
+GUIDE_FILE = BASE_DIR / "knowledge" / "clinical_guidelines.md"
 
-    if vitals.spo2 < 92:
-        matches.append("SpO2 below 92% requires urgent evaluation.")
-    if vitals.temperature > 102:
-        matches.append("Temperature above 102F requires clinical review.")
-    if vitals.age > 55:
-        matches.append("Age above 55 increases risk.")
 
-    return matches
+def retrieve_guidelines():
+
+    with open(GUIDE_FILE, "r") as file:
+        guidelines = file.read()
+
+    return guidelines

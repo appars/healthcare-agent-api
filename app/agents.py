@@ -1,38 +1,70 @@
-# Two simple agents.
-# These are intentionally lightweight and easy to understand.
+"""
+agents.py
+
+Two-Agent Workflow
+
+1. Risk Assessment Agent
+2. Recommendation Agent
+"""
+
+import json
+
+from app.llm import llm
+
 
 def risk_agent(vitals, guidelines):
-    risk = "LOW"
-    confidence = 0.75
 
-    if vitals.temperature > 102 or vitals.spo2 < 92:
-        risk = "HIGH"
-        confidence = 0.92
-    elif vitals.temperature > 99 or vitals.spo2 < 95:
-        risk = "MODERATE"
-        confidence = 0.82
+    prompt = f"""
+You are a healthcare risk assessment agent.
 
-    return {
-        "risk": risk,
-        "confidence": confidence
-    }
+Patient Information:
+
+Age: {vitals.age}
+Temperature: {vitals.temperature}
+SpO2: {vitals.spo2}
+
+Clinical Guidelines:
+
+{guidelines}
+
+Determine the risk level.
+
+Return ONLY JSON.
+
+Example:
+
+{{
+  "risk": "HIGH",
+  "confidence": 0.92
+}}
+"""
+
+    response = llm.invoke(prompt)
+
+    return json.loads(response.content)
+
 
 def recommendation_agent(risk_result):
-    risk = risk_result["risk"]
 
-    if risk == "HIGH":
-        return {
-            "priority": "URGENT",
-            "action": "Seek medical evaluation within 24 hours"
-        }
+    prompt = f"""
+You are a healthcare recommendation agent.
 
-    if risk == "MODERATE":
-        return {
-            "priority": "MEDIUM",
-            "action": "Monitor symptoms and consult a clinician"
-        }
+Risk Assessment:
 
-    return {
-        "priority": "LOW",
-        "action": "Continue routine monitoring"
-    }
+{risk_result}
+
+Provide a recommendation.
+
+Return ONLY JSON.
+
+Example:
+
+{{
+  "priority":"URGENT",
+  "action":"Seek medical evaluation within 24 hours"
+}}
+"""
+
+    response = llm.invoke(prompt)
+
+    return json.loads(response.content)

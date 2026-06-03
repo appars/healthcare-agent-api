@@ -21,7 +21,7 @@ def home():
 @app.post("/assess")
 def assess(vitals: PatientVitals):
     # Retrieve relevant guideline text
-    guidelines = retrieve_guidelines(vitals)
+    guidelines = retrieve_guidelines()
 
     # Agent 1: Assess risk
     risk = risk_agent(vitals, guidelines)
